@@ -1,5 +1,7 @@
 import Layout from "@/components/Layout"
 import { API_URL } from "@/config/index"
+import ArticleItem from '@/components/ArticleItem'
+import Link from 'next/link'
 
 export default function Home({articles}) {
   return (
@@ -8,8 +10,14 @@ export default function Home({articles}) {
       {articles.length === 0 && <h3>No articles to show</h3>}
     
     {articles.map(article=>(
-      <h3 key={article.id}>{article.name}</h3>
+      <ArticleItem key={article.id} article={article}/>
     ))}
+
+    {articles.length > 0 && (
+      <Link href='/articles'>
+        <a className="btn-secondary">View All Articles</a>
+      </Link>
+    )}
     
     </Layout>
   )
@@ -21,7 +29,7 @@ export async function getStaticProps(){
   const articles = await res.json()
 
   return {
-    props:{articles},
+    props:{articles:articles.slice(0,3)},
     revalidate:1,
   }
 }
