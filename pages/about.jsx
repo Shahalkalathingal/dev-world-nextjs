@@ -2,7 +2,7 @@ import Layout from "@/components/Layout"
 
 function about() {
     return (
-        <Layout title='About article world'>
+        <Layout title='About Dev world'>
             About
         </Layout>
     )

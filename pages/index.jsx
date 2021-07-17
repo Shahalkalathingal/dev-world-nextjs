@@ -6,7 +6,7 @@ import Link from 'next/link'
 export default function Home({articles}) {
   return (
     <Layout>
-      <h1>Latest Articles</h1>
+      <h2>Latest Articles</h2>
       {articles.length === 0 && <h3>No articles to show</h3>}
     
     {articles.map(article=>(
@@ -24,12 +24,11 @@ export default function Home({articles}) {
 }
 
 
-export async function getStaticProps(){
-  const res = await fetch(`${API_URL}/api/articles`)
+export async function getServerSideProps(){
+  const res = await fetch(`${API_URL}/articles?_sort=date:ASC&_limit=3`)
   const articles = await res.json()
 
   return {
-    props:{articles:articles.slice(0,3)},
-    revalidate:1,
+    props:{articles},
   }
 }

@@ -7,12 +7,12 @@ function ArticleItem({article}) {
     return (
         <div className={styles.article}>
             <div className={styles.img}>
-                <Image src={article.img ? article.img : '/images/event-default.png'} width={170} height={100}/>
+                <Image src={article.image ? article.image.formats.thumbnail.url : '/images/event-default.png'} width={170} height={100}/>
             </div>
 
             <div className={styles.info}>
                 <span>
-                    {article.date} at {article.time}
+                    {new Date(article.date).toLocaleDateString(('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' }))} at {article.time}
                 </span>
                 <h3>{article.name}</h3>
             </div>

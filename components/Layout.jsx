@@ -28,9 +28,9 @@ function Layout({ title, keywords, description, children }) {
 }
 
 Layout.defaultProps = {
-    title: 'Article world | Read the best articles',
-    description: 'Read the latest articles and blogs',
-    keywords: 'blog, article, articleworld, blogs, shahal, shahalkalathingal, articles, shahalk, shahalblog, blogshahal, posts, allposts'
+    title: 'Dev World | Read the best dev articles',
+    description: 'Read the latest dev articles and blogs',
+    keywords: 'blog, article, articleworld, blogs, shahal, shahalkalathingal, articles, shahalk, shahalblog, blogshahal, posts, allposts, dev, devarticles, development, webdevelopment, webarticles'
 }
 
 

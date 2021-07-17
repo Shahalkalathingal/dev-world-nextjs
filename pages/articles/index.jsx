@@ -5,7 +5,7 @@ import ArticleItem from '@/components/ArticleItem'
 export default function ArticlesPage({articles}) {
   return (
     <Layout>
-      <h1>Articles</h1>
+      <h2>Articles</h2>
       {articles.length === 0 && <h3>No articles to show</h3>}
     
     {articles.map(article=>(
@@ -17,12 +17,10 @@ export default function ArticlesPage({articles}) {
 }
 
 
-export async function getStaticProps(){
-  const res = await fetch(`${API_URL}/api/articles`)
+export async function getServerSideProps(){
+  const res = await fetch(`${API_URL}/articles?_sort=date:ASC`)
   const articles = await res.json()
-
   return {
     props:{articles},
-    revalidate:1,
   }
-}
+} 
