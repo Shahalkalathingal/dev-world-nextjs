@@ -1,0 +1,14 @@
+{
+    "articles":[
+        {
+            "id":"1",
+            "name":"Nextjs is the best for production",
+            "slug":"nextjs-is-the-best",
+            "description":"New nextjs is the best for production than react it is a serverside react app.we can get best seo",
+            "author":"Shahal Kalathingal",
+            "date":"July 21, 2008",
+            "time":"10:00 PM EST",
+            "image":"/images/sample/event1.jpg"
+        }
+    ]
+}
