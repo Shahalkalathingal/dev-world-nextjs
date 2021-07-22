@@ -1,28 +1,28 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import styles from '@/styles/ArticleItem.module.css'
+import moment from 'moment'
 
-function ArticleItem({article}) {
-    
+function ArticleItem({ article }) {
+
     return (
-        <div className={styles.article}>
-            <div className={styles.img}>
-                <Image src={article.image ? article.image.formats.thumbnail.url : '/images/event-default.png'} width={170} height={100}/>
-            </div>
+        <Link href={`/articles/${article.slug}`}>
+            <a className={styles.link}>
+                <div className={styles.h3}>
 
-            <div className={styles.info}>
-                <span>
-                    {new Date(article.date).toLocaleDateString(('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' }))} at {article.time}
-                </span>
-                <h3>{article.name}</h3>
-            </div>
+                    <div className={styles.article}>
 
-            <div className={styles.link}>
-                <Link href={`/articles/${article.slug}`}>
-                    <a className="btn">Details</a>
-                </Link>
-            </div>
-        </div>
+                        <div className={styles.info}>
+                            <span>
+                                {moment(article.created_at).format('DD/MM/YYYY')} at {moment(article.created_at).format('hh:mm A')}
+                            </span>
+                            <h3>{article.name.length > 50 ? `${article.name.substr(0,50)}...` : article.name}</h3>
+                        </div>
+
+                    </div>
+                </div>
+            </a>
+        </Link>
     )
 }
 

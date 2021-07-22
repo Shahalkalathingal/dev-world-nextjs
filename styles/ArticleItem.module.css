@@ -1,5 +1,5 @@
 .article{
-    display: flex;
+    display: inherit;
     justify-content: space-between;
     align-items: center;
     margin: 20px 0 ;
@@ -7,14 +7,13 @@
     box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.1);
 }
 
-.img{
-    flex: 1;
+ .img{
     margin: 10px;
 }
 
 .info{
     flex: 2;
-}
+} 
 
 @media (max-width:600px) {
     .event{
@@ -25,4 +24,20 @@
     .info{
         margin-bottom: 20px;
     }
+    
+}
+
+
+
+
+.h3{
+    color: black;
+}
+
+.link{
+    cursor: pointer;
+}
+
+.h3:hover{
+    color: rgb(161, 0, 0);
 }
