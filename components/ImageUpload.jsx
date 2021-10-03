@@ -3,7 +3,7 @@ import { API_URL } from "../config"
 import styles from '@/styles/Form.module.css'
 
 
-function ImageUpload({articleId,ImageUploaded}) {
+function ImageUpload({articleId,ImageUploaded,token}) {
     const [image, setImage] = useState(null)
 
     const handleSubmit = async(e)=>{
@@ -16,7 +16,10 @@ function ImageUpload({articleId,ImageUploaded}) {
 
         const res = await fetch(`${API_URL}/upload`,{
             method:'POST',
-            body:formData
+            body:formData,
+            headers:{
+                Authorization:`Bearer ${token}`
+            }
         })
 
         if(res.ok){

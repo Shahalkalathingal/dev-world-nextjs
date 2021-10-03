@@ -13,46 +13,22 @@ import HTMLReactParser from "html-react-parser"
 
 function ArticlePage({ article }) {
     const router = useRouter()
-    const deleteArticle = async (e) => {
-        if (confirm('Are you sure?')) {
-            const res = await fetch(`${API_URL}/articles/${article.id}`, {
-                method: 'DELETE'
-            })
-            const data = await res.json()
-
-            if (!res.ok) {
-                toast.error(data.message)
-            } else {
-                router.push('/articles')
-            }
-        }
-    }
 
     return (
         <>
             {article ? <Layout title={`${article.name && article} | Dev World`} description={article.name}>
                 <div className={styles.article}>
-                    <div className={styles.controls}>
-                        <Link href={`/articles/edit/${article.id}`}>
-                            <a>
-                                <FaPencilAlt /> Edit Article
-                            </a>
-                        </Link>
-                        <a href="#" className={styles.delete} onClick={deleteArticle}>
-                            <FaTimes /> Delete Article
-                        </a>
-                    </div>
 
                     {article.image && (
                         <div className={styles.image}>
-                            <Image src={article.image.formats.medium.url} width={960} height={600} alt="a" />
+                            <Image src={article ? article.image.url : '/favicon.ico'} width={960} height={600} alt="Thumbnail" />
                         </div>
                     )
                     }
                     <span>
                         <b>{moment(article.created_at).format('DD/MM/YYYY')} at {moment(article.created_at).format('hh:mm A')}</b>
                     </span>
-                    <p>Author : {article.author}</p>
+                    <p>Author : {article.user.username}</p>
                     <h2 style={{ textAlign:'justify',overflow:'auto'}}>{article.name}</h2>
                     <ToastContainer />
                     <div>

@@ -2,18 +2,21 @@ import Layout from "@/components/Layout"
 import { API_URL } from "@/config/index"
 import Link from "next/link"
 import { useRouter } from "next/router"
-import {  useState } from "react"
+import {  useContext, useState } from "react"
 import styles from '@/styles/Form.module.css'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import dynamic from 'next/dynamic'
 import 'quill/dist/quill.snow.css'
+import AuthContext from "@/context/AuthContext"
+import { parseCookies } from "helpers"
 
 
 const Quill = dynamic(import('react-quill'), {
     ssr: false,
     loading: () => <p>Loading ...</p>,
 })
+
 
 
 const modules = {
@@ -58,51 +61,55 @@ const formats = [
 
 
 
-function AddEventPage() {
+function AddEventPage({token}) {
 
+    const {user} = useContext(AuthContext)
     const [values, setValues] = useState({
         name: '',
         description: '',
-        author: '',
     })
-
+    
     const router = useRouter()
-
+    
     // Submit handler
     const handleSubmit = async (e) => {
         e.preventDefault()
         let hasEmptyFields
-        if (!values.name || !values.description || !values.author) {
+        if (!values.name || !values.description) {
             hasEmptyFields = true
         } else {
             hasEmptyFields = false
         }
-
+        
         if (hasEmptyFields) {
             return toast.error('Please fill all the fields')
         }
-
+        
         const res = await fetch(`${API_URL}/articles`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                Authorization:`Bearer ${token}`
             },
             body: JSON.stringify(values)
         })
         if (!res.ok) {
+            if(res.status === 403 || res.status === 401){
+                toast.error('No token included')
+                return
+            }
             toast.error('Something went wrong')
         } else {
             const article = await res.json()
             router.push(`/articles/${article.slug}`)
         }
-
+        
     }
-
+    
     // InputChangeHandler
     const handleInputChange = (e) => {
-        const { name, value } = e.target
-        let author = 'Shahal Kalathingal'
-        setValues({ ...values, [name]: value, author: author })
+        const { name, value } = e.target   
+        setValues({ ...values, [name]: value, })
     }
 
     return (
@@ -132,3 +139,13 @@ function AddEventPage() {
 }
 
 export default AddEventPage
+
+export async function getServerSideProps({req}){
+    const {token} = parseCookies(req)
+
+    return{
+        props:{
+            token
+        }
+    }
+}

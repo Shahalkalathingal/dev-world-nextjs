@@ -27,7 +27,6 @@ export async function getServerSideProps({query:{term}}){
         _where:{
             _or:[
                 {name_contains:term},
-                {author_contains:term},
                 {description_contains:term},
             ]
         }

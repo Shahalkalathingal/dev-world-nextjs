@@ -1,9 +1,9 @@
 import Layout from "@/components/Layout"
 import { API_URL } from "@/config/index"
-import {FaImage} from 'react-icons/fa'
+import { FaImage } from 'react-icons/fa'
 import Link from "next/link"
 import { useRouter } from "next/router"
-import { useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import styles from '@/styles/Form.module.css'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -12,6 +12,8 @@ import dynamic from 'next/dynamic'
 import 'quill/dist/quill.snow.css'
 import Modal from '@/components/Modal'
 import ImageUpload from "@/components/ImageUpload"
+import AuthContext from "@/context/AuthContext"
+import { isUserLoggedIn, parseCookies } from "helpers"
 
 const Quill = dynamic(import('react-quill'), {
     ssr: false,
@@ -60,15 +62,21 @@ const formats = [
 
 
 
-function EditArticlePage({ article }) {
+function EditArticlePage({ article,token }) {
     const [values, setValues] = useState({
         name: article.name,
         description: article.description,
-        author: article.author,
     })
+    const { user } = useContext(AuthContext)
+
+    useEffect(() => {
+        // isUserLoggedIn(user,article.user.id,router)
+    }, [])
 
 
-    const imageUploaded = async(e)=>{
+
+    const imageUploaded = async (e) => {
+        e.preventDefault()
         const res = await fetch(`${API_URL}/articles/${articleId}`)
         const data = await res.json()
         setImagePreview(data.image.formats.thumbnail.url)
@@ -77,7 +85,7 @@ function EditArticlePage({ article }) {
 
     const [imagePreview, setImagePreview] = useState(article.image ? article.image.formats.thumbnail.url : null)
 
-    const [showModal,setShowModal] = useState(false)
+    const [showModal, setShowModal] = useState(false)
 
     const router = useRouter()
 
@@ -85,7 +93,7 @@ function EditArticlePage({ article }) {
         e.preventDefault()
         console.log(values);
         let hasEmptyFields
-        if (!values.name || !values.description || !values.author) {
+        if (!values.name || !values.description) {
             hasEmptyFields = true
         } else {
             hasEmptyFields = false
@@ -98,14 +106,20 @@ function EditArticlePage({ article }) {
         const res = await fetch(`${API_URL}/articles/${article.id}`, {
             method: 'PUT',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                Authorization:`Bearer ${token}`
             },
             body: JSON.stringify(values)
         })
         if (!res.ok) {
+            if (res.status === 403 || res.status === 401) {
+                toast.error('Unauthorized')
+                return
+            }
             toast.error('Something went wrong')
         } else {
             const article = await res.json()
+            toast.success("Post updated")
             router.push(`/articles/${article.slug}`)
         }
 
@@ -113,8 +127,7 @@ function EditArticlePage({ article }) {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target
-        let author = article.author
-        setValues({ ...values, [name]: value, author: author })
+        setValues({ ...values, [name]: value })
     }
 
     return (
@@ -131,9 +144,9 @@ function EditArticlePage({ article }) {
                 </div>
 
                 <div>
-                <div>
-                    <Quill modules={modules} formats={formats} value={values.description} onChange={e=>setValues({...values,description:e})}/>
-                </div>
+                    <div>
+                        <Quill modules={modules} formats={formats} value={values.description} onChange={e => setValues({ ...values, description: e })} />
+                    </div>
                 </div>
 
                 <input type="submit" value="Update Article" className='btn' />
@@ -147,26 +160,32 @@ function EditArticlePage({ article }) {
                     No image uploaded
                 </p>
             </div>}
+
             <div>
-                <button className='btn-secondary' onClick={()=>setShowModal(true)}>
-                    <FaImage/> Set Image
+                <button className='btn-secondary' onClick={() => setShowModal(true)}>
+                    <FaImage /> Set Image
                 </button>
             </div>
 
-            <Modal show={showModal} onClose={()=>setShowModal(false)}>
-               <ImageUpload articleId={article.id} imageUploaded={imageUploaded}/>
+            <Modal show={showModal} onClose={() => setShowModal(false)}>
+                <ImageUpload token={token} articleId={article.id} imageUploaded={imageUploaded} />
             </Modal>
         </Layout>
     )
 }
 
 
-export async function getServerSideProps({ params: { id } ,req}) {
+export async function getServerSideProps({ params: { id }, req }) {
+    let {token} = parseCookies(req)
+    if(!token){
+        token = 'no-token'
+    }
     const res = await fetch(`${API_URL}/articles/${id}`)
     const article = await res.json()
     return {
         props: {
-            article
+            article,
+            token
         }
     }
 }
