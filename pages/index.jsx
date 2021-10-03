@@ -27,7 +27,7 @@ export default function Home({articles}) {
 export async function getServerSideProps(){
   const res = await fetch(`${API_URL}/articles?_sort=created_at:DESC&_limit=3`)
   const articles = await res.json()
-
+console.log(res);
   return {
     props:{articles},
   }
