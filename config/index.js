@@ -1,4 +1,4 @@
-export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://devworldbackend.herokuapp.com'
+export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:1447'
 
 export const NEXT_URL = process.env.NEXT_PUBLIC_FRONTEND_URL || 'http://localhost:3000'
 
